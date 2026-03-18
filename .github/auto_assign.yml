@@ -1,38 +1,16 @@
-# Set to true to add reviewers to pull requests
-addReviewers: true
+name: "Auto Assign"
 
-# Set to true to add assignees to pull requests
-addAssignees: false
+on:
+  pull_request:
+    types: [opened, ready_for_review]
 
-# A list of reviewers to be added to pull requests (GitHub user name)
-reviewers:
-  - Soulter
-  - Raven95676
-  - Larch-C
-  - anka-afk
-  - advent259141
-  - Fridemn
-  - LIghtJUNction
-  # - zouyonghe
-
-# A number of reviewers added to the pull request
-# Set 0 to add all the reviewers (default: 0)
-numberOfReviewers: 2
-
-# A list of assignees, overrides reviewers if set
-# assignees:
-#   - assigneeA
-
-# A number of assignees to add to the pull request
-# Set to 0 to add all of the assignees.
-# Uses numberOfReviewers if unset.
-# numberOfAssignees: 2
-
-# A list of keywords to be skipped the process that add reviewers if pull requests include it
-skipKeywords:
-  - wip
-  - draft
-
-# A list of users to be skipped by both the add reviewers and add assignees processes
-# skipUsers:
-#   - dependabot[bot]
+jobs:
+  add-assignees:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: "Auto-assign participants"
+        uses: kentaro-m/auto-assign-action@v1.2.5
+        with:
+          configuration-path: ".github/auto_assign.yml" # Path to your config file
