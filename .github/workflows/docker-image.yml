@@ -1,36 +1,5 @@
 # --- Stage 1: Dashboard Build ---
-FROM node:25-slim AS dashboard-builder
-WORKDIR /app/dashboard
-
-# Install dependencies first (leverages Docker layer caching)
-COPY dashboard/package*.json ./
-RUN npm ci --quiet
-
-# Copy source and build
-COPY dashboard/ .
-RUN npm run build && \
-    # Inject the git commit hash into a version file
-    echo $(date +%Y%m%d) > dist/assets/version
-
-# --- Stage 2: Final Production Image ---
-FROM python:3.11-slim-bookworm AS final
-WORKDIR /app
-
-# Install system dependencies if needed (e.g., git, curl)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy built dashboard assets from Stage 1 to your data directory
-COPY --from=dashboard-builder /app/dashboard/dist /app/data/dist
-
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application
-COPY . .
-
+i
 # Environment variables
 ENV PYTHONUNBUFFERED=1
 ENV NODE_ENV=production
